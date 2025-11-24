@@ -2,6 +2,7 @@ package easv.my_tunes.dal;
 
 import easv.my_tunes.be.Song;
 
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +28,22 @@ public class SongsAccessObject {
                 songs.add(new Song(id, title, artist, category, time, path));
             }
             return songs;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveSong(String title, String artist, String category, int time, Path targetPath) {
+        try (Connection con = ConnectionManager.getConnection()){
+            String sqlPrompt = "Insert Into songs (title, artist, category, time, path) VALUES (?,?,?,?,?)";
+            PreparedStatement pst = con.prepareStatement(sqlPrompt);
+            pst.setString(1, title);
+            pst.setString(2, artist);
+            pst.setString(3, category);
+            pst.setInt(4, time);
+            pst.setString(5, targetPath.toString());
+            pst.execute();
         }
         catch (SQLException e) {
             throw new RuntimeException(e);

@@ -5,10 +5,10 @@ public class Song {
     private String title;
     private String artist;
     private String category;
-    private double time;
+    private int time;
     private String path;
 
-    public Song(int id, String title, String artist, String category, double time,  String path) {
+    public Song(int id, String title, String artist, String category, int time,  String path) {
         this.id = id;
         this.title = title;
         this.artist = artist;
@@ -19,5 +19,24 @@ public class Song {
 
     public int getId() {
         return id;
+    }
+
+    public String getTitle(){
+        return title;
+    }
+    public String getArtist(){
+        return artist;
+    }
+    public String getCategory(){
+        return category;
+    }
+    public String getTime(){
+        int minutes = time / 60;
+        int seconds = time % 60;
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    public int getTimeInt(){
+        return time;
     }
 }
