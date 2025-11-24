@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.SwipeEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,6 +47,9 @@ public class MainController implements Initializable {
     private TableView<Playlist> playListsTable;
 
     @FXML
+    private ListView<String> songsInPlaylistList;
+
+    @FXML
     private TableColumn<Playlist,String> playListName;
 
     @FXML
@@ -64,10 +68,13 @@ public class MainController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupVolumeSwipeGesture();
         this.logic = new Logic();
+        songsTable.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> songsTable.requestFocus());
+        playListsTable.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> playListsTable.requestFocus());
         List<Song> songs = logic.loadSongs();
         List<Playlist> playlists = logic.loadPlaylists();
         displaySongs(songs);
         displayPlaylists(playlists);
+        displaySongsInPlaylist();
     }
     
     @FXML
@@ -98,8 +105,29 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    private void addSongToPlaylist(){
+        Song song = songsTable.getSelectionModel().getSelectedItem();
+        Playlist playlist = playListsTable.getSelectionModel().getSelectedItem();
+        if (song != null && playlist != null) {
+            logic.addSongToPlaylist(playlist, song);
+        }
+        displayPlaylists(logic.loadPlaylists());
+        displaySongsInPlaylist();
+    }
+
+    private void displaySongsInPlaylist(){
+        Playlist playlist = playListsTable.getItems().get(0);
+        if (playlist.getSongs() != 0) {
+            ObservableList<String> lst = FXCollections.observableArrayList();
+            lst.addAll(playlist.getNamesOfSongs());
+            songsInPlaylistList.setItems(lst);
+        }
+    }
+
     public void getNewPlayListData(String name){
         logic.savePlayList(name);
+        displayPlaylists(logic.loadPlaylists());
     }
 
     private void setupVolumeSwipeGesture() {
@@ -154,5 +182,6 @@ public class MainController implements Initializable {
 
     public void getNewSongData(String title, String artist, String category, int time, File file) {
         logic.saveSong(title,  artist, category, time, file);
+        displaySongs(logic.loadSongs());
     }
 }

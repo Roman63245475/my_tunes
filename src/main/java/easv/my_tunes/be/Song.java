@@ -17,7 +17,7 @@ public class Song {
         this.path = path;
     }
 
-    public int getId() {
+    public int getID() {
         return id;
     }
 
