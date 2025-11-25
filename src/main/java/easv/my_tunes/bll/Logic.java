@@ -55,6 +55,10 @@ public class Logic {
         songsAccessObject.editSong(title, artist, category, time, targetPath, obj);
     }
 
+    public void deleteSong(Song song) {
+        songsAccessObject.deleteSong(song);
+    }
+
     private Path createFile(File file) {
         Path dirPath = Path.of("src/main/resources/easv/my_tunes/audio");
         File dir = dirPath.toFile();

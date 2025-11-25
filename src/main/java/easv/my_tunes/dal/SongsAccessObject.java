@@ -67,4 +67,20 @@ public class SongsAccessObject {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteSong(Song song) {
+        try (Connection con = ConnectionManager.getConnection()) {
+            String sqlRel = "DELETE FROM playlist_songs WHERE song_id = ?";
+            PreparedStatement psRel = con.prepareStatement(sqlRel);
+            psRel.setInt(1, song.getID());
+            psRel.execute();
+
+            String sql = "DELETE FROM songs WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, song.getID());
+            ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
