@@ -13,6 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.SwipeEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -25,6 +27,9 @@ import java.util.ResourceBundle;
 public class MainController implements Initializable {
     @FXML
     private Label welcomeText;
+
+    @FXML
+    MediaPlayer player;
 
     @FXML
     private TableView<Song> songsTable;
@@ -47,7 +52,7 @@ public class MainController implements Initializable {
     private TableView<Playlist> playListsTable;
 
     @FXML
-    private ListView<String> songsInPlaylistList;
+    private ListView<Song> songsInPlaylistList;
 
     @FXML
     private TableColumn<Playlist,String> playListName;
@@ -74,7 +79,48 @@ public class MainController implements Initializable {
         List<Playlist> playlists = logic.loadPlaylists();
         displaySongs(songs);
         displayPlaylists(playlists);
-        displaySongsInPlaylist();
+        setActionOnSelectedItemTableView();
+        setActionOnSelectedItemListView();
+    }
+
+    private void setActionOnSelectedItemListView(){
+        songsInPlaylistList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                playMusic(newValue);
+            }
+        });
+    }
+
+    private void setActionOnSelectedItemTableView(){
+        playListsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                displaySongsInPlaylist(newValue);
+            }
+        });
+    }
+
+    private void displaySongsInPlaylist(Playlist playlist){
+        if (playlist.getSongs() != 0) {
+            ObservableList<Song> lst = FXCollections.observableArrayList();
+            lst.addAll(playlist.getSongsList());
+            songsInPlaylistList.setItems(lst);
+        }
+    }
+
+
+
+
+    @FXML
+    private void playMusic(Song song) {
+        String uriString = new File(song.getPath()).toURI().toString();
+        Media media = new Media(uriString);
+        player =  new MediaPlayer(media);
+        player.play();
+    }
+
+    @FXML
+    private void stop() {
+        player.stop();
     }
     
     @FXML
@@ -113,16 +159,6 @@ public class MainController implements Initializable {
             logic.addSongToPlaylist(playlist, song);
         }
         displayPlaylists(logic.loadPlaylists());
-        displaySongsInPlaylist();
-    }
-
-    private void displaySongsInPlaylist(){
-        Playlist playlist = playListsTable.getItems().get(0);
-        if (playlist.getSongs() != 0) {
-            ObservableList<String> lst = FXCollections.observableArrayList();
-            lst.addAll(playlist.getNamesOfSongs());
-            songsInPlaylistList.setItems(lst);
-        }
     }
 
     public void getNewPlayListData(String name){

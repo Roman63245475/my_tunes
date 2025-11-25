@@ -39,4 +39,13 @@ public class Song {
     public int getTimeInt(){
         return time;
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
+
+    public String getPath(){
+        return path;
+    }
 }
