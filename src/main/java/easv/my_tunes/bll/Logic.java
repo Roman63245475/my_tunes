@@ -79,10 +79,6 @@ public class Logic {
         songsAccessObject.deleteSong(song);
     }
 
-    public void deletePlaylist(Playlist playlist) {
-        playListAccessObject.deletePlaylist(playlist);
-    }
-
     private Path createFile(File file) {
         Path dirPath = Path.of("src/main/resources/easv/my_tunes/audio");
         File dir = dirPath.toFile();
@@ -95,5 +91,13 @@ public class Logic {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void deleteSongFromPlaylist(Song song, Playlist playlist) {
+        playLists_songs_AccessObject.deleteSong(song, playlist);
+    }
+
+    public List<Song> getSongsOnPlaylist(Playlist playlist){
+        return playLists_songs_AccessObject.getSongsOnPlaylist(playlist);
     }
 }

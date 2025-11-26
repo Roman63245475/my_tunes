@@ -7,6 +7,21 @@ public class Song {
     private String category;
     private int time;
     private String path;
+    private int playlist_song_id;
+
+    public Song(int id, String title, String artist, String category, int time,  String path,  int playlist_song_id) {
+        this.id = id;
+        this.title = title;
+        this.artist = artist;
+        this.category = category;
+        this.time = time;
+        this.path = path;
+        this.playlist_song_id = playlist_song_id;
+    }
+
+    public int getPlaylist_song_id() {
+        return playlist_song_id;
+    }
 
     public Song(int id, String title, String artist, String category, int time,  String path) {
         this.id = id;

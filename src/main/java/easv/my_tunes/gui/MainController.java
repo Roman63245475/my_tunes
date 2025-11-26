@@ -110,11 +110,9 @@ public class MainController implements Initializable {
     }
 
     private void displaySongsInPlaylist(Playlist playlist){
-        if (playlist.getSongs() != 0) {
-            ObservableList<Song> lst = FXCollections.observableArrayList();
-            lst.addAll(playlist.getSongsList());
-            songsInPlaylistList.setItems(lst);
-        }
+        ObservableList<Song> lst = FXCollections.observableArrayList();
+        lst.addAll(logic.getSongsOnP    laylist(playlist));
+        songsInPlaylistList.setItems(lst);
     }
 
 
@@ -122,27 +120,10 @@ public class MainController implements Initializable {
 
     @FXML
     private void playMusic(Song song) {
-        String path = song.getPath().replace("\\", "/");
-
-        File file = new File(path);
-
-        if (file.exists()) {
-            String uriString = file.toURI().toString();
-            Media media = new Media(uriString);
-
-            if (player != null) {
-                player.stop();
-            }
-
-            player = new MediaPlayer(media);
-            player.play();
-
-            if (volumeSlider != null) {
-                player.setVolume(volumeSlider.getValue() / 100.0);
-            }
-        } else {
-            System.out.println("Soubor nebyl nalezen: " + path);
-        }
+        String uriString = new File(song.getPath()).toURI().toString();
+        Media media = new Media(uriString);
+        player =  new MediaPlayer(media);
+        player.play();
     }
 
     @FXML
@@ -217,8 +198,26 @@ public class MainController implements Initializable {
         displayPlaylists(logic.loadPlaylists());
     }
 
+    @FXML
+    private void deleteSongFomPlaylist(){
+        Song song = songsInPlaylistList.getSelectionModel().getSelectedItem();
+        Playlist playlist = playListsTable.getSelectionModel().getSelectedItem();
+        if (song != null && playlist != null) {
+            int id = playListsTable.getSelectionModel().getSelectedItem().getID();
+            logic.deleteSongFromPlaylist(song, playlist);
+            List<Playlist> playlists = logic.loadPlaylists();
+            for (Playlist playlst : playlists) {
+                if (id == playlst.getID()) {
+                    displaySongsInPlaylist(playlst);
+                    playListsTable.getSelectionModel().select(playlst);
+                }
+            }
+        }
+    }
+
     private void setupVolumeSwipeGesture() {
         if (volumeSlider != null) {
+            // Swipe doprava = zvýšení hlasitosti
             volumeSlider.setOnSwipeRight((SwipeEvent event) -> {
                 double newValue = volumeSlider.getValue() + 10;
                 if (newValue > volumeSlider.getMax()) {
@@ -228,6 +227,7 @@ public class MainController implements Initializable {
                 System.out.println("Volume UP: " + newValue);
             });
             
+            // Swipe doleva = snížení hlasitosti
             volumeSlider.setOnSwipeLeft((SwipeEvent event) -> {
                 double newValue = volumeSlider.getValue() - 10;
                 if (newValue < volumeSlider.getMin()) {
@@ -237,8 +237,10 @@ public class MainController implements Initializable {
                 System.out.println("Volume DOWN: " + newValue);
             });
             
+            // Listener pro změny hodnoty slideru
             volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
                 System.out.println("Volume changed: " + newValue.intValue());
+                // Zde můžete přidat logiku pro skutečné změny hlasitosti přehrávače
             });
         }
     }
@@ -300,56 +302,6 @@ public class MainController implements Initializable {
         if (selectedSong != null) {
             logic.deleteSong(selectedSong);
             displaySongs(logic.loadSongs());
-        }
-    }
-
-    @FXML
-    private void onDeletePlaylistClick() {
-        Playlist selectedPlaylist = playListsTable.getSelectionModel().getSelectedItem();
-        if (selectedPlaylist != null) {
-            logic.deletePlaylist(selectedPlaylist);
-            displayPlaylists(logic.loadPlaylists());
-            songsInPlaylistList.getItems().clear();
-        }
-    }
-
-    @FXML
-    private void moveSongUp() {
-        int index = songsInPlaylistList.getSelectionModel().getSelectedIndex();
-        Playlist currentPlaylist = playListsTable.getSelectionModel().getSelectedItem();
-
-        if (index > 0 && currentPlaylist != null) {
-            List<Song> songs = currentPlaylist.getSongsList();
-            Song temp = songs.get(index);
-            songs.set(index, songs.get(index - 1));
-            songs.set(index - 1, temp);
-
-            ObservableList<Song> items = songsInPlaylistList.getItems();
-            Song item = items.get(index);
-            items.remove(index);
-            items.add(index - 1, item);
-
-            songsInPlaylistList.getSelectionModel().select(index - 1);
-        }
-    }
-
-    @FXML
-    private void moveSongDown() {
-        int index = songsInPlaylistList.getSelectionModel().getSelectedIndex();
-        Playlist currentPlaylist = playListsTable.getSelectionModel().getSelectedItem();
-        ObservableList<Song> items = songsInPlaylistList.getItems();
-
-        if (index >= 0 && index < items.size() - 1 && currentPlaylist != null) {
-            List<Song> songs = currentPlaylist.getSongsList();
-            Song temp = songs.get(index);
-            songs.set(index, songs.get(index + 1));
-            songs.set(index + 1, temp);
-
-            Song item = items.get(index);
-            items.remove(index);
-            items.add(index + 1, item);
-
-            songsInPlaylistList.getSelectionModel().select(index + 1);
         }
     }
 
