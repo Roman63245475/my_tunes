@@ -305,4 +305,14 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    private void onDeletePlaylistClick() {
+        Playlist selectedPlaylist = playListsTable.getSelectionModel().getSelectedItem();
+        if (selectedPlaylist != null) {
+            logic.deletePlaylist(selectedPlaylist);
+            displayPlaylists(logic.loadPlaylists());
+            songsInPlaylistList.getItems().clear();
+        }
+    }
+
 }
