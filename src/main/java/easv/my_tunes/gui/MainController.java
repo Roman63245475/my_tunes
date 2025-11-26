@@ -111,12 +111,9 @@ public class MainController implements Initializable {
 
     private void displaySongsInPlaylist(Playlist playlist){
         ObservableList<Song> lst = FXCollections.observableArrayList();
-        lst.addAll(logic.getSongsOnP    laylist(playlist));
+        lst.addAll(logic.getSongsOnPlaylist(playlist));
         songsInPlaylistList.setItems(lst);
     }
-
-
-
 
     @FXML
     private void playMusic(Song song) {
