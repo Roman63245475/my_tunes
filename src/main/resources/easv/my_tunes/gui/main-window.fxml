@@ -57,8 +57,8 @@
                 onAction="#addNewOrEditPlaylist" prefHeight="36.0" prefWidth="50.0" text="New"/>
         <Button fx:id="EditPlaylistButton" layoutX="108.0" layoutY="599.0" mnemonicParsing="false"
                 onAction="#addNewOrEditPlaylist" prefHeight="36.0" prefWidth="50.0" text="Edit"/>
-        <Button layoutX="195.0" layoutY="598.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="50.0"
-                text="Delete"/>
+        <Button layoutX="195.0" layoutY="598.0" mnemonicParsing="false" onAction="#onDeletePlaylistClick"
+                prefHeight="36.0" prefWidth="50.0" text="Delete"/>
 
         <Button layoutX="276.0" layoutY="599.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="48.0" text="🡇"/>
         <Button layoutX="339.0" layoutY="599.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="50.0" text="🡅"/>
