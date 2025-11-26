@@ -110,11 +110,9 @@ public class MainController implements Initializable {
     }
 
     private void displaySongsInPlaylist(Playlist playlist){
-        if (playlist.getSongs() != 0) {
-            ObservableList<Song> lst = FXCollections.observableArrayList();
-            lst.addAll(playlist.getSongsList());
-            songsInPlaylistList.setItems(lst);
-        }
+        ObservableList<Song> lst = FXCollections.observableArrayList();
+        lst.addAll(logic.getSongsOnP    laylist(playlist));
+        songsInPlaylistList.setItems(lst);
     }
 
 
@@ -198,6 +196,23 @@ public class MainController implements Initializable {
             logic.addSongToPlaylist(playlist, song);
         }
         displayPlaylists(logic.loadPlaylists());
+    }
+
+    @FXML
+    private void deleteSongFomPlaylist(){
+        Song song = songsInPlaylistList.getSelectionModel().getSelectedItem();
+        Playlist playlist = playListsTable.getSelectionModel().getSelectedItem();
+        if (song != null && playlist != null) {
+            int id = playListsTable.getSelectionModel().getSelectedItem().getID();
+            logic.deleteSongFromPlaylist(song, playlist);
+            List<Playlist> playlists = logic.loadPlaylists();
+            for (Playlist playlst : playlists) {
+                if (id == playlst.getID()) {
+                    displaySongsInPlaylist(playlst);
+                    playListsTable.getSelectionModel().select(playlst);
+                }
+            }
+        }
     }
 
     private void setupVolumeSwipeGesture() {

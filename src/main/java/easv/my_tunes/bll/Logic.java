@@ -92,4 +92,12 @@ public class Logic {
             throw new RuntimeException(e);
         }
     }
+
+    public void deleteSongFromPlaylist(Song song, Playlist playlist) {
+        playLists_songs_AccessObject.deleteSong(song, playlist);
+    }
+
+    public List<Song> getSongsOnPlaylist(Playlist playlist){
+        return playLists_songs_AccessObject.getSongsOnPlaylist(playlist);
+    }
 }
