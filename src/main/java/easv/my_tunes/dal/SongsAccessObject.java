@@ -2,6 +2,7 @@ package easv.my_tunes.dal;
 
 import easv.my_tunes.be.Song;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -46,6 +47,39 @@ public class SongsAccessObject {
             pst.execute();
         }
         catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void editSong(String title, String artist, String category, int time, Path path, Song obj) {
+        try(Connection con = ConnectionManager.getConnection()){
+            String sqlPrompt = "Update songs Set title=?, artist=?, category=?, time=?, path=? where id=?";
+            PreparedStatement pst = con.prepareStatement(sqlPrompt);
+            pst.setString(1, title);
+            pst.setString(2, artist);
+            pst.setString(3, category);
+            pst.setInt(4, time);
+            pst.setString(5, path.toString());
+            pst.setInt(6, obj.getID());
+            pst.execute();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteSong(Song song) {
+        try (Connection con = ConnectionManager.getConnection()) {
+            String sqlRel = "DELETE FROM playlist_songs WHERE song_id = ?";
+            PreparedStatement psRel = con.prepareStatement(sqlRel);
+            psRel.setInt(1, song.getID());
+            psRel.execute();
+
+            String sql = "DELETE FROM songs WHERE id = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, song.getID());
+            ps.execute();
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

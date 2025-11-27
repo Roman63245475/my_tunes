@@ -1,5 +1,6 @@
 package easv.my_tunes.gui;
 
+import easv.my_tunes.be.Song;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -24,6 +25,8 @@ public class NewSongController implements Initializable, OtherWindow {
     
     @FXML
     private TextField titleField;
+
+    private String type;
     
     @FXML
     private TextField artistField;
@@ -47,6 +50,8 @@ public class NewSongController implements Initializable, OtherWindow {
     
     @FXML
     private Button saveButton;
+
+    private Song obj;
     
     @FXML
     private Button cancelButton;
@@ -87,6 +92,18 @@ public class NewSongController implements Initializable, OtherWindow {
             filePathField.setText(selectedFile.getName());
             calculateAndSetDuration();
         }
+    }
+
+    public void getType(String type) {
+        this.type = type;
+    }
+
+    public void getObject(Object obj) {
+        this.obj = (Song) obj;
+        if (type == "Edit") {
+            fillFields();
+        }
+
     }
 
     public void getMainController(MainController controller){
@@ -149,22 +166,30 @@ public class NewSongController implements Initializable, OtherWindow {
             return;
         }
         
-        if (selectedFile == null) {
+        if (selectedFile == null && type.equals("New")) {
             showAlert("Validation Error", "Please choose an MP3 file.");
             return;
+        }
+
+        if (selectedFile == null && type.equals("Edit")) {
+            selectedFile = new File(obj.getPath());
         }
         AudioFile audioFile = AudioFileIO.read(selectedFile);
         AudioHeader audioHeader = audioFile.getAudioHeader();
         int durationInSeconds = audioHeader.getTrackLength();
-        mainController.getNewSongData(titleField.getText(), artistField.getText(), categoryComboBox.getValue(), durationInSeconds, selectedFile);
-//        System.out.println("Saving song:");
-//        System.out.println("Title: " + titleField.getText());
-//        System.out.println("Artist: " + artistField.getText());
-//        System.out.println("Category: " + categoryComboBox.getValue());
-//        System.out.println("Time: " + timeField.getText());
-//        System.out.println("File: " + selectedFile.getAbsolutePath());
+        if (type.equals("New")) {
+            mainController.getNewSongData(titleField.getText(), artistField.getText(), categoryComboBox.getValue(), durationInSeconds, selectedFile);
+            closeWindow();
+        }
+        else {
+            mainController.getEditSongData(titleField.getText(), artistField.getText(), categoryComboBox.getValue(), durationInSeconds, selectedFile, obj);
+            closeWindow();
+        }
+    }
 
-        closeWindow();
+    private void fillFields() {
+        timeField.setText(obj.getTime());
+        filePathField.setText(obj.getPath());
     }
     
     @FXML
