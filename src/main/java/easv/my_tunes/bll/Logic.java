@@ -76,7 +76,13 @@ public class Logic {
     }
 
     public void deleteSong(Song song) {
+        Path targetPath = Path.of(song.getPath());
+        File file = targetPath.toFile();
+        if (file.exists()) {
+            file.delete();
+        }
         songsAccessObject.deleteSong(song);
+
     }
 
     public void deletePlaylist(Playlist playlist) {

@@ -3,6 +3,7 @@ package easv.my_tunes.gui;
 import easv.my_tunes.be.Playlist;
 import easv.my_tunes.be.Song;
 import easv.my_tunes.bll.Logic;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -105,6 +106,15 @@ public class MainController implements Initializable {
         displayPlaylists(playlists);
         setActionOnSelectedItemTableView();
         setActionOnSelectedItemListView();
+        setActionOnSelectedItemTableViewSongs();
+    }
+
+    private void setActionOnSelectedItemTableViewSongs() {
+        songsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                playMusic(newValue);
+            }
+        });
     }
 
     private void setActionOnSelectedItemListView() {
@@ -396,9 +406,15 @@ public class MainController implements Initializable {
 
     @FXML
     private void onDeleteSongClick() {
+        if (player != null) {
+            player.stop();
+            player.dispose();
+            player = null;
+        }
         Song selectedSong = songsTable.getSelectionModel().getSelectedItem();
         if (selectedSong != null) {
-            logic.deleteSong(selectedSong);
+            Platform.runLater(() -> logic.deleteSong(selectedSong));
+            songsTable.getSelectionModel().clearSelection();
             displaySongs(logic.loadSongs());
         }
     }
