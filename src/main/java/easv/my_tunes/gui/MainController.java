@@ -96,7 +96,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        setupVolumeSwipeGesture();
+        //setupVolumeSwipeGesture();
         this.logic = new Logic();
         songsTable.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> songsTable.requestFocus());
         playListsTable.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> playListsTable.requestFocus());
@@ -107,6 +107,9 @@ public class MainController implements Initializable {
         setActionOnSelectedItemTableView();
         setActionOnSelectedItemListView();
         setActionOnSelectedItemTableViewSongs();
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            setupVolumeSwipeGesture(newValue.doubleValue());
+        });
     }
 
     private void setActionOnSelectedItemTableViewSongs() {
@@ -301,30 +304,33 @@ public class MainController implements Initializable {
         }
     }
 
-    private void setupVolumeSwipeGesture() {
-        if (volumeSlider != null) {
-            volumeSlider.setOnSwipeRight((SwipeEvent event) -> {
-                double newValue = volumeSlider.getValue() + 10;
-                if (newValue > volumeSlider.getMax()) {
-                    newValue = volumeSlider.getMax();
-                }
-                volumeSlider.setValue(newValue);
-                System.out.println("Volume UP: " + newValue);
-            });
-
-            volumeSlider.setOnSwipeLeft((SwipeEvent event) -> {
-                double newValue = volumeSlider.getValue() - 10;
-                if (newValue < volumeSlider.getMin()) {
-                    newValue = volumeSlider.getMin();
-                }
-                volumeSlider.setValue(newValue);
-                System.out.println("Volume DOWN: " + newValue);
-            });
-
-            volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-                System.out.println("Volume changed: " + newValue.intValue());
-            });
+    private void setupVolumeSwipeGesture(double newvalue) {
+        if (player != null) {
+            player.setVolume(newvalue / 100.0);
         }
+//        if (volumeSlider != null) {
+//            volumeSlider.setOnSwipeRight((SwipeEvent event) -> {
+//                double newValue = volumeSlider.getValue() + 10;
+//                if (newValue > volumeSlider.getMax()) {
+//                    newValue = volumeSlider.getMax();
+//                }
+//                volumeSlider.setValue(newValue);
+//                System.out.println("Volume UP: " + newValue);
+//            });
+//
+//            volumeSlider.setOnSwipeLeft((SwipeEvent event) -> {
+//                double newValue = volumeSlider.getValue() - 10;
+//                if (newValue < volumeSlider.getMin()) {
+//                    newValue = volumeSlider.getMin();
+//                }
+//                volumeSlider.setValue(newValue);
+//                System.out.println("Volume DOWN: " + newValue);
+//            });
+//
+//            volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+//                System.out.println("Volume changed: " + newValue.intValue());
+//            });
+//        }
     }
 
     private void displaySongs(List<Song> songs) {
