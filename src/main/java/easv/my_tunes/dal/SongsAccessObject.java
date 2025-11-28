@@ -51,16 +51,14 @@ public class SongsAccessObject {
         }
     }
 
-    public void editSong(String title, String artist, String category, int time, Path path, Song obj) {
+    public void editSong(String title, String artist, String category, Song obj) {
         try(Connection con = ConnectionManager.getConnection()){
-            String sqlPrompt = "Update songs Set title=?, artist=?, category=?, time=?, path=? where id=?";
+            String sqlPrompt = "Update songs Set title=?, artist=?, category=? where id=?";
             PreparedStatement pst = con.prepareStatement(sqlPrompt);
             pst.setString(1, title);
             pst.setString(2, artist);
             pst.setString(3, category);
-            pst.setInt(4, time);
-            pst.setString(5, path.toString());
-            pst.setInt(6, obj.getID());
+            pst.setInt(4, obj.getID());
             pst.execute();
         }
         catch (SQLException e) {

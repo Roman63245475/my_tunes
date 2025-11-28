@@ -96,6 +96,14 @@ public class NewSongController implements Initializable, OtherWindow {
 
     public void getType(String type) {
         this.type = type;
+        checkType();
+    }
+
+    private void checkType() {
+        if (type.equals("Edit")) {
+            chooseFileButton.setDisable(true);
+            setEditTime();
+        }
     }
 
     public void getObject(Object obj) {
@@ -104,6 +112,11 @@ public class NewSongController implements Initializable, OtherWindow {
             fillFields();
         }
 
+    }
+
+    private void setEditTime(){
+        timeField.setText(obj.getTime());
+        filePathField.setText(obj.getPath());
     }
 
     public void getMainController(MainController controller){
@@ -171,18 +184,15 @@ public class NewSongController implements Initializable, OtherWindow {
             return;
         }
 
-        if (selectedFile == null && type.equals("Edit")) {
-            selectedFile = new File(obj.getPath());
-        }
-        AudioFile audioFile = AudioFileIO.read(selectedFile);
-        AudioHeader audioHeader = audioFile.getAudioHeader();
-        int durationInSeconds = audioHeader.getTrackLength();
         if (type.equals("New")) {
+            AudioFile audioFile = AudioFileIO.read(selectedFile);
+            AudioHeader audioHeader = audioFile.getAudioHeader();
+            int durationInSeconds = audioHeader.getTrackLength();
             mainController.getNewSongData(titleField.getText(), artistField.getText(), categoryComboBox.getValue(), durationInSeconds, selectedFile);
             closeWindow();
         }
         else {
-            mainController.getEditSongData(titleField.getText(), artistField.getText(), categoryComboBox.getValue(), durationInSeconds, selectedFile, obj);
+            mainController.getEditSongData(titleField.getText(), artistField.getText(), categoryComboBox.getValue(), obj);
             closeWindow();
         }
     }

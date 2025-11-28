@@ -223,6 +223,9 @@ public class MainController implements Initializable {
 
     @FXML
     private void onNewOrEditSongClick(ActionEvent actionEvent) {
+        if (player != null) {
+            player.stop();
+        }
         Object source = actionEvent.getSource();
         String actionType = "";
         if (source == EditSongButton) {
@@ -240,6 +243,9 @@ public class MainController implements Initializable {
 
     @FXML
     private void addNewOrEditPlaylist(ActionEvent actionEvent) {
+        if (player != null) {
+            player.stop();
+        }
         Object source = actionEvent.getSource();
         String actionType = "";
         if (source == EditPlaylistButton) {
@@ -265,8 +271,8 @@ public class MainController implements Initializable {
             stage.setScene(new Scene(loader.load()));
             OtherWindow controller = loader.getController();
             controller.getMainController(this);
-            controller.getType(actionType);
             controller.getObject(obj);
+            controller.getType(actionType);
             stage.setTitle(title);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
@@ -384,19 +390,14 @@ public class MainController implements Initializable {
         displaySongs(logic.loadSongs());
     }
 
-    public void getEditSongData(String title, String artist, String category, int time, File file, Song obj) {
-        int id = playListsTable.getSelectionModel().getSelectedItem().getID();
-        logic.editSong(title, artist, category, time, file, obj);
+    public void getEditSongData(String title, String artist, String category, Song obj) {
+        logic.editSong(title, artist, category,  obj);
         displaySongs(logic.loadSongs());
         String name = obj.getTitle();
         List<Playlist> playlists = logic.loadPlaylists();
         displayPlaylists(playlists);
-        for (Playlist playlist : playlists) {
-            if (id == playlist.getID()) {
-                displaySongsInPlaylist(playlist);
-                playListsTable.getSelectionModel().select(playlist);
-            }
-        }
+        playListsTable.getSelectionModel().clearSelection();
+        songsInPlaylistList.getItems().clear();
 
     }
 
@@ -438,6 +439,7 @@ public class MainController implements Initializable {
             player.stop();
             player.dispose();
             player = null;
+            lblCurrentSong.setText("-");
         }
         Song selectedSong = songsTable.getSelectionModel().getSelectedItem();
         if (selectedSong != null) {

@@ -54,22 +54,12 @@ public class Logic {
         playLists_songs_AccessObject.addSongToPlaylist(playlist, song);
     }
 
-    public void editSong(String title, String artist, String category, int time, File file, Song obj) {
+    public void editSong(String title, String artist, String category, Song obj) {
         obj.setTitle(title);
         obj.setArtist(artist);
         obj.setCategory(category);
-        obj.setTime(time);
-        if (file != null) {
-            obj.setPath(createFile(file).toString()); // если новый файл
-        }
-        Path targetPath;
-        if (file.toPath().equals(obj.getPath())) {
-            targetPath = file.toPath();
-            songsAccessObject.editSong(title, artist, category, time, targetPath, obj);
-        } else {
-            targetPath = createFile(file);
-            songsAccessObject.editSong(title, artist, category, time, targetPath, obj);
-        }
+        //obj.setTime(time);
+        songsAccessObject.editSong(title, artist, category, obj);
 //        Path targetPath;
 //        if (file.getAbsolutePath().equals(new File(obj.getPath()).getAbsolutePath())) {
 //            targetPath = Path.of(obj.getPath());
