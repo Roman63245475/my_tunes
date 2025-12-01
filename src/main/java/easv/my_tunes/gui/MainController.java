@@ -330,6 +330,7 @@ public class MainController implements Initializable {
             logic.addSongToPlaylist(playlist, song);
         }
         displayPlaylists(logic.loadPlaylists());
+        displaySongsInPlaylist(playlist);
     }
 
     @FXML
