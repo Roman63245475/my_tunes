@@ -265,6 +265,7 @@ public class MainController implements Initializable {
     private void onNewOrEditSongClick(ActionEvent actionEvent) {
         if (player != null) {
             player.stop();
+            player = null;
         }
         Object source = actionEvent.getSource();
         String actionType = "";

@@ -130,17 +130,45 @@ public class Logic {
 
     private Path createFile(File file) {
         Path dirPath = Path.of("src/main/resources/easv/my_tunes/audio");
-        File dir = dirPath.toFile();
-        dir.mkdirs();
-        Path targetPath = dirPath.resolve(file.getName());
-        try {
-            Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-            return targetPath;
+        dirPath.toFile().mkdirs();
+
+        String baseName = file.getName();
+        String name = baseName;
+        int counter = 1;
+
+        Path targetPath = dirPath.resolve(name);
+
+        // Если файл существует — создаём новый уникальный вариант
+        while (Files.exists(targetPath)) {
+            String withoutExt = baseName.substring(0, baseName.lastIndexOf('.'));
+            String ext = baseName.substring(baseName.lastIndexOf('.'));
+            name = withoutExt + " (" + counter + ")" + ext;
+            targetPath = dirPath.resolve(name);
+            counter++;
         }
-        catch (IOException e) {
+
+        try {
+            Files.copy(file.toPath(), targetPath);
+            return targetPath;
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
+
+//    private Path createFile(File file) {
+//        Path dirPath = Path.of("src/main/resources/easv/my_tunes/audio");
+//        File dir = dirPath.toFile();
+//        dir.mkdirs();
+//        Path targetPath = dirPath.resolve(file.getName());
+//
+//        try {
+//            Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+//            return targetPath;
+//        }
+//        catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public void deleteSongFromPlaylist(Song song, Playlist playlist) {
         playLists_songs_AccessObject.deleteSong(song, playlist);
