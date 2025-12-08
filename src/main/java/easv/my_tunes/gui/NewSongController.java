@@ -198,6 +198,9 @@ public class NewSongController implements Initializable, OtherWindow {
     }
 
     private void fillFields() {
+        titleField.setText(obj.getTitle());
+        artistField.setText(obj.getArtist());
+        categoryComboBox.setValue(obj.getCategory());
         timeField.setText(obj.getTime());
         filePathField.setText(obj.getPath());
     }

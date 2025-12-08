@@ -10,11 +10,11 @@ public class ConnectionManager {
     public static Connection getConnection() throws SQLServerException {
         SQLServerDataSource ds;
         ds = new SQLServerDataSource();
-        ds.setDatabaseName("xxx"); // make this unique as names are shared on server
-        ds.setUser("xxx"); // Use your own username
-        ds.setPassword("xxx"); // Use your own password
-        ds.setServerName("xxx");
-        ds.setPortNumber('xxx');
+        ds.setDatabaseName("my_tunes_db"); // make this unique as names are shared on server
+        ds.setUser("CS2025b_e_25"); // Use your own username
+        ds.setPassword("CS2025bE25#23"); // Use your own password
+        ds.setServerName("10.176.111.34");
+        ds.setPortNumber(1433);
         ds.setTrustServerCertificate(true);
         return ds.getConnection();
     }

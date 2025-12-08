@@ -199,7 +199,11 @@ public class MainController implements Initializable {
 
     @FXML
     private void nextSong(){
+        if (flag && songsTable.getItems().isEmpty()) return;
+        if (!flag && songsInPlaylistList.getItems().isEmpty()) return;
+
         Song selectedSong;
+
         if (flag){
             int index = songsTable.getSelectionModel().getSelectedIndex();
             //Song selectedSong;
@@ -380,9 +384,9 @@ public class MainController implements Initializable {
 
                     String lowerCaseFilter = newValue.toLowerCase();
 
-                    if (song.getTitle().toLowerCase().contains(lowerCaseFilter)) {
+                    if (song.getTitle() != null && song.getTitle().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
-                    } else if (song.getArtist().toLowerCase().contains(lowerCaseFilter)) {
+                    } else if (song.getArtist() != null && song.getArtist().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
                     }
                     return false;
@@ -440,13 +444,15 @@ public class MainController implements Initializable {
 
     @FXML
     private void onDeleteSongClick() {
-        if (player != null) {
+        Song selectedSong = songsTable.getSelectionModel().getSelectedItem();
+
+        if (selectedSong != null && player != null && lblCurrentSong.getText().contains(selectedSong.getTitle())) {
             player.stop();
             player.dispose();
             player = null;
             lblCurrentSong.setText("-");
         }
-        Song selectedSong = songsTable.getSelectionModel().getSelectedItem();
+
         if (selectedSong != null) {
             //Platform.runLater(() -> logic.deleteSong(selectedSong));
             logic.deleteSong(selectedSong);
