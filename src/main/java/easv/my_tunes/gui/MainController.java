@@ -65,6 +65,8 @@ public class MainController implements Initializable {
 
     private Logic logic;
 
+    private Playlist selected_playlist;
+
     @FXML
     private TableView<Playlist> playListsTable;
 
@@ -137,6 +139,8 @@ public class MainController implements Initializable {
     private void setActionOnSelectedItemTableView() {
         playListsTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                selected_playlist = newValue;
+                System.out.println(selected_playlist);
                 displaySongsInPlaylist(newValue);
             }
         });
@@ -336,11 +340,14 @@ public class MainController implements Initializable {
 
     @FXML
     private void deleteSongFomPlaylist() {
+
         Song song = songsInPlaylistList.getSelectionModel().getSelectedItem();
-        Playlist playlist = playListsTable.getSelectionModel().getSelectedItem();
-        if (song != null && playlist != null) {
-            int id = playListsTable.getSelectionModel().getSelectedItem().getID();
-            logic.deleteSongFromPlaylist(song, playlist);
+        //Playlist playlist = playListsTable.getSelectionModel().getSelectedItem();
+        if (song != null && selected_playlist != null) {
+            player.stop();
+            player = null;
+            int id = selected_playlist.getID();
+            logic.deleteSongFromPlaylist(song, selected_playlist);
             List<Playlist> playlists = logic.loadPlaylists();
             displayPlaylists(playlists);
             for (Playlist playlst : playlists) {
@@ -445,6 +452,11 @@ public class MainController implements Initializable {
             logic.deleteSong(selectedSong);
             songsTable.getSelectionModel().clearSelection();
             displaySongs(logic.loadSongs());
+            displayPlaylists(logic.loadPlaylists());
+            if (selected_playlist!=null){
+                displaySongsInPlaylist(selected_playlist);
+            }
+
         }
     }
 

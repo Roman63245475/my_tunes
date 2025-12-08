@@ -10,9 +10,9 @@ public class ConnectionManager {
     public static Connection getConnection() throws SQLServerException {
         SQLServerDataSource ds;
         ds = new SQLServerDataSource();
-        ds.setDatabaseName("xxx");
-        ds.setUser("xxx");
-        ds.setPassword("xxx");
+        ds.setDatabaseName("xxx"); // make this unique as names are shared on server
+        ds.setUser("xxx"); // Use your own username
+        ds.setPassword("xxx"); // Use your own password
         ds.setServerName("xxx");
         ds.setPortNumber('xxx');
         ds.setTrustServerCertificate(true);
